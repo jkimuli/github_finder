@@ -3,10 +3,8 @@ import axios from 'axios';
 import GithubContext from './githubContext';
 import GithubReducer from './githubReducer';
 import  { SEARCH_USERS,
-          CLEAR_USERS,
-          SET_ALERT,
-          SET_LOADING,
-          REMOVE_ALERT,
+          CLEAR_USERS,          
+          SET_LOADING,         
           GET_REPOS,
           GET_USER
  } from '../types';
@@ -60,7 +58,28 @@ import  { SEARCH_USERS,
        console.log(err)
      } 
 
-  }  
+    }
+    
+    //get the repos for a single user
+
+  const getUserRepos = async username => {
+    
+    setLoading()
+
+    try{
+      const res = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`)
+      
+      dispatch({
+          type: GET_REPOS,
+          payload:res.data
+      })
+      
+
+     }catch(err){
+       console.log(err)
+     } 
+
+  } 
 
     // Set Loading 
     
@@ -82,7 +101,8 @@ import  { SEARCH_USERS,
           repos:state.repos,
           searchUsers,
           clearUsers,
-          getUser
+          getUser,
+          getUserRepos
      }}>
          {props.children}
      </GithubContext.Provider>
